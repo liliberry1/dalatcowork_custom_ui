@@ -65,27 +65,38 @@ class _SquareViewState extends State<SquareView> {
   Widget rowBody(
       List<String> data, List<GlobalKey> keys, List<bool> states, Size size) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: data
           .asMap()
           .map((index, text) => MapEntry(
               index,
               Expanded(
-                key: keys[index],
                 flex: 1,
                 child: AspectRatio(
                   aspectRatio: 1,
-                  child: Container(
-                    margin: EdgeInsets.all(5),
-                    color: states[index] ? Colors.orange : Colors.white,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: <Widget>[
-                        Text(
-                          text.toUpperCase(),
-                          style: TextStyle(
-                              fontSize: 32, fontWeight: FontWeight.bold),
-                        ),
-                      ],
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Container(
+//                    margin: EdgeInsets.all(5),
+                      width: size.width / (widget.numberOfItemInRowCenter + 1),
+                      key: keys[index],
+//                    color: states[index] ? Colors.orange : Colors.white,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: states[index] ? Colors.orange : Colors.white,
+                        border: Border.all(color: Colors.black, width: 1),
+                        borderRadius: BorderRadius.all(Radius.circular(5)),
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Text(
+                            text.toUpperCase(),
+                            style: TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

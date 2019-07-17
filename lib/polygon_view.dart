@@ -24,6 +24,7 @@ class _PolyGonState extends State<PolyGon> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    print("size poly gon ${size}");
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

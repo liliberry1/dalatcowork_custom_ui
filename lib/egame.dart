@@ -6,10 +6,13 @@ import 'square_view.dart';
 class EGame extends StatefulWidget {
   EGameTypeWidget typeWidget;
   List<String> data = List();
-   List<GlobalKey> keys = List();
+  List<GlobalKey> keys = List();
   List<bool> states = List();
   int numberOfItemInRowCenter;
   bool isFirstTouch = false;
+
+  String resultPolygon = "inr";
+  String resultSquare = "RAN";
 
   @override
   _EGameState createState() => _EGameState();
@@ -28,7 +31,9 @@ class _EGameState extends State<EGame> {
   Map<GlobalKey, Offset> globalPosition = Map();
   Map<GlobalKey, Size> globalSizeViews = Map();
   int previousIndex = -1;
-  int lastIndex = -2;
+  List<String> result = List();
+  GlobalKey keyBody = GlobalKey();
+  bool isMatch = false;
 
   //region --LOGIC
   getSizeWithKey(GlobalKey key) {
@@ -65,7 +70,16 @@ class _EGameState extends State<EGame> {
 
   calculatorDistanceStandard(int index) {
     double width = globalSizeViews[widget.keys[index]].width;
-    return (1 / 2) * width + width;
+    switch (widget.typeWidget) {
+      case EGameTypeWidget.polygon:
+        {
+          return (1 / 2) * width + width;
+        }
+      case EGameTypeWidget.square:
+        {
+          return 2 * width;
+        }
+    }
   }
 
   compareGesture(DragUpdateDetails details) {
@@ -107,18 +121,63 @@ class _EGameState extends State<EGame> {
     if (previousIndex == index) {
       return;
     } else {
+      previousIndex = index;
       setState(() {
         widget.states[index] = !widget.states[index];
       });
-      //todo: save and remove state
-//      if(widget.states[index]){
-//        //add data in select array
-//      }else{
-//        //remove data in select array
-//      }
-      previousIndex = index;
-      print("data selected: ${widget.data[index]}");
+      if (widget.states[previousIndex]) {
+        result.add(widget.data[previousIndex]);
+      } else {
+        result.removeAt(index);
+      }
     }
+  }
+
+  onPanEnd(DragEndDetails details) {
+    print('data selected $result');
+    var ketqua = "";
+    for (var data in result) {
+      ketqua += data;
+    }
+    if (widget.typeWidget == EGameTypeWidget.square) {
+      if (ketqua.toUpperCase() == widget.resultSquare.toUpperCase()) {
+        print("match");
+        setState(() {
+          isMatch = true;
+        });
+      } else {
+        setState(() {
+          isMatch = false;
+        });
+        for (int i = 0; i < widget.states.length; i++) {
+          setState(() {
+            widget.states[i] = false;
+          });
+        }
+      }
+    } else {
+      if (ketqua.toUpperCase() == widget.resultPolygon.toUpperCase()) {
+        print("match");
+        setState(() {
+          isMatch = true;
+        });
+      } else {
+        setState(() {
+          isMatch = false;
+        });
+        for (int i = 0; i < widget.states.length; i++) {
+          setState(() {
+            widget.states[i] = false;
+          });
+        }
+      }
+    }
+
+    previousIndex = -1;
+  }
+
+  onPanStart(var details) {
+    result.clear();
   }
 
   //endregion
@@ -126,12 +185,88 @@ class _EGameState extends State<EGame> {
   @override
   Widget build(BuildContext context) {
     widget.generatorKeyWithData();
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
-        child: GestureDetector(
-          onPanUpdate: compareGesture,
-          child: bodyGame(
-              widget.typeWidget, widget.data, widget.keys, widget.states),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+              Color(0xff00A293),
+              Color(0xff00774F),
+            ])),
+        child: Column(
+          children: <Widget>[
+            new QuestionWidget(),
+            new EventWidget(),
+            Expanded(
+              flex: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                        color: !widget.isFirstTouch
+                            ? Colors.white
+                            : isMatch ? Colors.orange : Colors.red,
+                        width: 5)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Text(
+                      "Answer: ${widget.typeWidget == EGameTypeWidget.square ? "RAN" : "INR"}",
+                      style:
+                          TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 6,
+              child: Container(
+//                key: keyBody,
+                child: GestureDetector(
+                  onPanUpdate: compareGesture,
+                  onPanEnd: onPanEnd,
+                  onPanStart: onPanStart,
+                  child: bodyGame(widget.typeWidget, widget.data, widget.keys,
+                      widget.states),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      width: 70,
+                      height: 70,
+                      margin: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: Color(0xff0D442D), shape: BoxShape.circle),
+                    ),
+                    Container(
+                      width: 70,
+                      height: 70,
+                      margin: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: Color(0xff0D442D), shape: BoxShape.circle),
+                    ),
+                    Container(
+                      width: 70,
+                      height: 70,
+                      margin: EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                          color: Color(0xff0D442D), shape: BoxShape.circle),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -145,6 +280,95 @@ class _EGameState extends State<EGame> {
       case EGameTypeWidget.square:
         return SquareView(data, keys, states, 5);
     }
+  }
+}
+
+class EventWidget extends StatelessWidget {
+  const EventWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            new ButtonGame("QUIT", true, Colors.white),
+            new ButtonGame("321", false, Color(0xffF9E922)),
+            new ButtonGame("Skip", true, Colors.white),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class QuestionWidget extends StatelessWidget {
+  const QuestionWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: 1,
+      child: Container(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 12),
+              child: Text(
+                "What's is animal name?".toUpperCase(),
+                style: TextStyle(
+                    color: Color(0xff00A293),
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            Container(
+                margin: EdgeInsets.only(right: 12),
+                child: Icon(
+                  Icons.menu,
+                  color: Color(0xff00A293),
+                  size: 36,
+                ))
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ButtonGame extends StatelessWidget {
+  String text;
+  bool isHasOnPress;
+  Color color;
+
+  ButtonGame(
+      @required this.text, @required this.isHasOnPress, @required this.color);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+        flex: 1,
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          color: Color(0xff0D5F5A),
+          child: FlatButton(
+            child: Text(
+              text.toUpperCase(),
+              style: TextStyle(
+                  color: color, fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ));
   }
 }
 
