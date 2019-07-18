@@ -28,9 +28,9 @@ class _SquareViewState extends State<SquareView> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 4),
+      margin: EdgeInsets.symmetric(horizontal: 32),
       child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: body(widget.data, widget.keys, widget.states, size)),
     );
@@ -75,12 +75,10 @@ class _SquareViewState extends State<SquareView> {
                 child: AspectRatio(
                   aspectRatio: 1,
                   child: Padding(
-                    padding: EdgeInsets.all(8),
+                    padding: EdgeInsets.all(4),
                     child: Container(
-//                    margin: EdgeInsets.all(5),
                       width: size.width / (widget.numberOfItemInRowCenter + 1),
                       key: keys[index],
-//                    color: states[index] ? Colors.orange : Colors.white,
                       decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
                         color: states[index] ? Colors.orange : Colors.white,

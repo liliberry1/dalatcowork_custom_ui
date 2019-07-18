@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'egame.dart';
-import 'socket_io.dart';
 import 'package:flutter/services.dart';
 import 'container_egame.dart';
 

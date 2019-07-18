@@ -33,7 +33,6 @@ class _EGameState extends State<EGame> {
   int previousIndex = -1;
   List<String> result = List();
   GlobalKey keyBody = GlobalKey();
-  bool isMatch = false;
 
   //region --LOGIC
   getSizeWithKey(GlobalKey key) {
@@ -142,13 +141,7 @@ class _EGameState extends State<EGame> {
     if (widget.typeWidget == EGameTypeWidget.square) {
       if (ketqua.toUpperCase() == widget.resultSquare.toUpperCase()) {
         print("match");
-        setState(() {
-          isMatch = true;
-        });
       } else {
-        setState(() {
-          isMatch = false;
-        });
         for (int i = 0; i < widget.states.length; i++) {
           setState(() {
             widget.states[i] = false;
@@ -158,13 +151,7 @@ class _EGameState extends State<EGame> {
     } else {
       if (ketqua.toUpperCase() == widget.resultPolygon.toUpperCase()) {
         print("match");
-        setState(() {
-          isMatch = true;
-        });
       } else {
-        setState(() {
-          isMatch = false;
-        });
         for (int i = 0; i < widget.states.length; i++) {
           setState(() {
             widget.states[i] = false;
@@ -197,35 +184,33 @@ class _EGameState extends State<EGame> {
               Color(0xff00774F),
             ])),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             new QuestionWidget(),
             new EventWidget(),
+            //answer
             Expanded(
-              flex: 1,
+              flex: 4,
               child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                        color: !widget.isFirstTouch
-                            ? Colors.white
-                            : isMatch ? Colors.orange : Colors.red,
-                        width: 5)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Text(
                       "Answer: ${widget.typeWidget == EGameTypeWidget.square ? "RAN" : "INR"}",
-                      style:
-                          TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
                     ),
                   ],
                 ),
               ),
             ),
-            Expanded(
-              flex: 6,
+            Flexible(
+              flex: 12,
               child: Container(
-//                key: keyBody,
+                alignment: Alignment.topCenter,
+                key: keyBody,
                 child: GestureDetector(
                   onPanUpdate: compareGesture,
                   onPanEnd: onPanEnd,
@@ -235,29 +220,30 @@ class _EGameState extends State<EGame> {
                 ),
               ),
             ),
+            Spacer(),
             Expanded(
-              flex: 1,
+              flex: 4,
               child: Container(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Container(
-                      width: 70,
-                      height: 70,
+                      width: 80,
+                      height: 80,
                       margin: EdgeInsets.all(4),
                       decoration: BoxDecoration(
                           color: Color(0xff0D442D), shape: BoxShape.circle),
                     ),
                     Container(
-                      width: 70,
-                      height: 70,
+                      width: 80,
+                      height: 80,
                       margin: EdgeInsets.all(4),
                       decoration: BoxDecoration(
                           color: Color(0xff0D442D), shape: BoxShape.circle),
                     ),
                     Container(
-                      width: 70,
-                      height: 70,
+                      width: 80,
+                      height: 80,
                       margin: EdgeInsets.all(4),
                       decoration: BoxDecoration(
                           color: Color(0xff0D442D), shape: BoxShape.circle),
@@ -290,11 +276,11 @@ class EventWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 1,
+    return Flexible(
+      flex: 2,
       child: Container(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             new ButtonGame("QUIT", true, Colors.white),
@@ -315,7 +301,7 @@ class QuestionWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      flex: 1,
+      flex: 2,
       child: Container(
         color: Colors.white,
         child: Row(
@@ -356,10 +342,11 @@ class ButtonGame extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return Flexible(
         flex: 1,
         child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+          margin: EdgeInsets.symmetric(vertical: 4),
+          padding: EdgeInsets.symmetric(horizontal: 18),
           color: Color(0xff0D5F5A),
           child: FlatButton(
             child: Text(

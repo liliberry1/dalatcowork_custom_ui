@@ -26,8 +26,9 @@ class _PolyGonState extends State<PolyGon> {
     Size size = MediaQuery.of(context).size;
     print("size poly gon ${size}");
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: 32),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: body(widget.data, widget.keys, widget.states, size),
       ),
     );
@@ -42,19 +43,19 @@ class _PolyGonState extends State<PolyGon> {
     int numSkip = 0;
 
     for (int i = widget.min; i <= widget.numberOfItemInRowCenter; i++) {
-        dataTemp = data.skip(numSkip).toList().take(i).toList();
-        keysTemp = keys.skip(numSkip).toList().take(i).toList();
-        statesTemp = states.skip(numSkip).toList().take(i).toList();
-        numSkip += i;
+      dataTemp = data.skip(numSkip).toList().take(i).toList();
+      keysTemp = keys.skip(numSkip).toList().take(i).toList();
+      statesTemp = states.skip(numSkip).toList().take(i).toList();
+      numSkip += i;
 
       rows.add(rowBody(dataTemp, keysTemp, statesTemp, size));
     }
 
     for (int i = widget.numberOfItemInRowCenter - 1; i >= widget.min; i--) {
-        dataTemp = data.skip(numSkip).toList().take(i).toList();
-        keysTemp = keys.skip(numSkip).toList().take(i).toList();
-        statesTemp = states.skip(numSkip).toList().take(i).toList();
-        numSkip +=i;
+      dataTemp = data.skip(numSkip).toList().take(i).toList();
+      keysTemp = keys.skip(numSkip).toList().take(i).toList();
+      statesTemp = states.skip(numSkip).toList().take(i).toList();
+      numSkip += i;
       rows.add(rowBody(dataTemp, keysTemp, statesTemp, size));
     }
 
@@ -71,8 +72,8 @@ class _PolyGonState extends State<PolyGon> {
             .map((index, data) => MapEntry(
                 index,
                 Container(
-                    width: size.width / widget.numberOfItemInRowCenter,
-                    height: size.width / widget.numberOfItemInRowCenter,
+                    width: (size.width) / (widget.numberOfItemInRowCenter + 1),
+                    height: (size.width) / (widget.numberOfItemInRowCenter + 1),
                     child: ClipPolygon(
                       borderRadius: 5,
                       sides: 6,
