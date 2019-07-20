@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'egame.dart';
 import 'package:flutter/services.dart';
 import 'container_egame.dart';
+import 'matrix_mapping_to_widget.dart';
 
 void main() => runApp(MyApp());
 
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: ContainerEgame(),
+      home: MatrixMapping(),
 //    home: SocketIOPage(),
     );
   }
